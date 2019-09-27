@@ -1,5 +1,37 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Docker container usage
+
+### Bootup CRA App
+
+#### Developement
+
+##### Docker CLI
+1. `$ docker build -f Dockerfile.dev .` to build docker image. 
+2. Run `$ docker run -p 3000:3000 ${image-ID}` to bootup your app.
+
+##### Docker Compose CLI (Real-Time update)
+`$ docker-compose up` to bootup App and testing simultaneously. Also, app will be auto-updated if any codebase changed.
+
+#### Production (Nginx)
+1. `$ docker build .` to build docker image. 
+2. Run `$ docker run -p 8080:80 ${image-ID}` to bootup your app.
+
+### Testing CRA App
+
+#### Docker CLI
+`$ docker run ${image-ID}` and then `docker exec -it ${container-ID} npm run test`
+1. Pros: Linking running container with terminal by stdin/ stdout channel.
+2. Cons: Cannot real-time updated without re-build docker image.
+
+#### Docker Compose CLI
+`$ docker-compose up` to bootup App and testing simultaneously. Also, app will be auto-updated if any codebase changed.
+1. Pros: Having real-time updated without re-build docker image.
+2. Cons: Cannot linking running container with terminal by stdin/ stdout channel.
+
+
+
+
 ## Available Scripts
 
 In the project directory, you can run:
