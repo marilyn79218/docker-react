@@ -1,6 +1,7 @@
 sudo: required
 services:
   - docker
+language: generic
 
 # Remove testing section to know if Dockerfile is copied into EBS automaticlly.
 # (Without COPY instruction defined in Dockerfile.dev)
