@@ -3,14 +3,21 @@ services:
   - docker
 language: generic
 
-# Remove testing section to know if Dockerfile is copied into EBS automaticlly.
-# (Without COPY instruction defined in Dockerfile.dev)
-# before_install:
-#   - docker build -t marilyn79218/docker-react -f Dockerfile.dev .
+before_install:
+  - docker build -t marilyn79218/docker-react -f Dockerfile.dev .
 
-# script:
-#   - docker run -e CI=true marilyn79218/docker-react npm run test -- --coverage
+script:
+  - docker run -e CI=true marilyn79218/docker-react npm run test -- --coverage
 
+
+# Explanation 1:
+# In deploy section, Travis will automatically copy entire source project to S3 bucket,
+# So EBS has the ability to deploy using Dockerfile inside that bucket.
+# (Without addtional COPY instruction to copy Project/ Dockerfile into EBS container environment)
+
+# Explanation 2:
+# Also, AWS EBS will look for "Dockerfile" in its nature, without any explicit instruction.
+# Ref: https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/15385734#questions/8296758
 deploy:
   provider: elasticbeanstalk
   region: "us-east-1"
