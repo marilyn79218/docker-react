@@ -7,6 +7,13 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      # Inside the container, we mapped all "the references that point to its /app folder" to "the current directory in local machine"
+      # Except for the reference that point to /app/node_modules, since /node_modules is not exist in local machine
+      # See: https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/11437066#overview
+
+      # In brief,
+      # 1. We hold the reference to node_modules locally inside the container
+      # 2. And map up all of the source code files on the local machine into the containers' app folder
       - /app/node_modules
       - .:/app
   web-test:
@@ -16,4 +23,5 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
+    # Override the default command inside of a Dockerfile
     command: ["npm", "run", "test"]

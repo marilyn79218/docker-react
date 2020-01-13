@@ -3,9 +3,15 @@ services:
   - docker
 language: generic
 
+# We're using Dockerfile.dev to run test suites rather than Dockerfile
+# which is only be used in production and has no any code inside of it meant for running test suites
+
+# Note: The tag name for the image can be whatever you want, no need to be very formal
+# As it will only be used inside of Travis process.
 before_install:
   - docker build -t marilyn79218/docker-react -f Dockerfile.dev .
 
+# Telling Travis how to run the test suites
 script:
   - docker run -e CI=true marilyn79218/docker-react npm run test -- --coverage
 
@@ -18,15 +24,31 @@ script:
 # Explanation 2:
 # Also, AWS EBS will look for "Dockerfile" in its nature, without any explicit instruction.
 # Ref: https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/15385734#questions/8296758
+
+
+# Explanation 3:
+# In brief, what we're doing here is pushing entire project to EBS and ask it to build an image and deploy it then.
+# which is totally kept EBS from doing its primary job of serving web requests.
 deploy:
+  # provider: Telling Travis to use the set of following instruction to deploy our app
   provider: elasticbeanstalk
   region: "us-east-1"
+  # app: the app name that you just created on EBS
+  # env: the environment that your app really referred to
   app: "docker-react"
   env: "DockerReact-env"
+  # bucket_name: The S3 bucket that autimatically generated along side the EBS was initially created (base on the region).
+  # bucket_path: The folder inside of the S3 bucket, which will only be created the first time you do a delpoy. Name it as the app name in above.
   bucket_name: "elasticbeanstalk-us-east-1-320583230029"
   bucket_path: "docker-react"
   on:
     branch: master
+
+  # API keys for Travis CI to be allowed to accesss AWS
+  # AWS IAM: The serviceused to manage API keys that can be used by outside services
+
+  ## Step 1: In AWS IAM, create a new user that is going to be used by Travis CI.
+  ## Step 2: Selecting a permission policy that granting that user (Travis) has the ability to deploy app to EBS
   access_key_id:
     secure: "$AWS_ACCESS_KEY"
   secret_access_key:

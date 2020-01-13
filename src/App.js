@@ -17,6 +17,7 @@ function App() {
           rel="noopener noreferrer"
         >
           Changed from feature branch into master
+          Last updated: 2020/01/14
         </a>
       </header>
     </div>
